@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { API_CONFIG } from '@/config/api'
 import { useNavigate } from 'react-router-dom'
 
 const HeroCarousel = () => {
@@ -13,7 +14,7 @@ const HeroCarousel = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/events?limit=3&status=draft')
+        const response = await fetch(`${API_CONFIG.ENDPOINTS.EVENTS.BASE}?limit=3&status=draft`)
         if (response.ok) {
           const data = await response.json()
           setEvents(data.events || [])

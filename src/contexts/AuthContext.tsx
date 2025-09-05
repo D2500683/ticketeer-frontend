@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { checkAuthStatus, clearAuthStorage } from '@/utils/authDebug';
+import { API_CONFIG } from '@/config/api';
 
 interface User {
   id: string
@@ -37,7 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Validate token with backend
   const validateToken = async (tokenToValidate: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/auth/validate', {
+      const response = await fetch(API_CONFIG.ENDPOINTS.AUTH.VERIFY, {
         headers: {
           'Authorization': `Bearer ${tokenToValidate}`,
           'Content-Type': 'application/json'

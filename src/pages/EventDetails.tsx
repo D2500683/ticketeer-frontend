@@ -25,19 +25,22 @@ import {
   ExternalLink,
   Sparkles,
   Instagram,
-  Loader2 as Loading
+  Loader2 as Loading,
+  ArrowLeft
 } from "lucide-react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import LivePlaylist from "@/components/LivePlaylist";
+import { format } from "date-fns";
+import { API_CONFIG } from "@/config/api";
 
 // API function to fetch single event
 const fetchEvent = async (id: string) => {
-  const response = await fetch(`http://localhost:3001/api/events/${id}`);
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ID(id));
   if (!response.ok) {
     throw new Error('Failed to fetch event');
   }
