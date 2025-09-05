@@ -9,13 +9,14 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { API_CONFIG } from "@/config/api";
 
 // API functions
 const fetchAnalytics = async (token: string) => {
   if (!token) throw new Error('No authentication token found');
   
   try {
-    const response = await fetch('http://localhost:3001/api/events/user/analytics', {
+    const response = await fetch(API_CONFIG.ENDPOINTS.ANALYTICS.USER, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -39,7 +40,7 @@ const fetchUserEvents = async (token: string) => {
   if (!token) throw new Error('No authentication token found');
   
   try {
-    const response = await fetch('http://localhost:3001/api/events/user/my-events', {
+    const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ORGANIZER, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'

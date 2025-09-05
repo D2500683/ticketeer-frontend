@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Loading } from "@/components/ui/loading";
-import { CalendarDays, MapPin, ArrowLeft, Users, Minus, Plus, ShoppingCart } from "lucide-react";
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { CalendarDays, MapPin, Users, Clock, CreditCard, ArrowLeft, ShoppingCart, Minus, Plus } from 'lucide-react'
+import { format } from 'date-fns'
+import { API_CONFIG } from '@/config/api'
 
 // API function to fetch single event
 const fetchEvent = async (id: string) => {
-  const response = await fetch(`http://localhost:3001/api/events/${id}`);
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ID(id));
   if (!response.ok) {
     throw new Error('Failed to fetch event');
   }
@@ -140,13 +143,7 @@ const TicketPurchase = () => {
     navigate('/checkout');
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <Loading size="lg" />
-      </div>
-    );
-  }
+  if (isLoading) return <div>Loading...</div>;
 
   if (error || !event) {
     return (

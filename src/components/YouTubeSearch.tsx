@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Youtube, Play, Plus, X } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Search, Play, Plus, ExternalLink, Youtube, X } from 'lucide-react';
+import { API_CONFIG } from '@/config/api';
 
 interface YouTubeVideo {
   id: string;
@@ -52,7 +52,7 @@ export default function YouTubeSearch({
 
     setIsSearching(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/youtube/search?q=${encodeURIComponent(query)}&maxResults=10`);
+      const response = await fetch(`${API_CONFIG.ENDPOINTS.YOUTUBE.SEARCH}?q=${encodeURIComponent(query)}&maxResults=10`);
       const data = await response.json();
       
       if (data.success) {

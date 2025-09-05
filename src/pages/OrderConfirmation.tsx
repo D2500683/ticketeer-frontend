@@ -1,25 +1,16 @@
-import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Loading } from "@/components/ui/loading";
-import { 
-  CheckCircle, 
-  Calendar, 
-  MapPin, 
-  Mail, 
-  Download, 
-  Share2, 
-  Smartphone,
-  QrCode,
-  ArrowRight
-} from "lucide-react";
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { CalendarDays, MapPin, Users, Clock, CheckCircle, Download, ArrowLeft, Mail, Smartphone, QrCode, ArrowRight, Calendar } from 'lucide-react'
+import { format } from 'date-fns'
+import { API_CONFIG } from '@/config/api'
 
 // API function to fetch order details
 const fetchOrder = async (orderId: string) => {
-  const response = await fetch(`http://localhost:3001/api/orders/${orderId}`);
+  const response = await fetch(API_CONFIG.ENDPOINTS.ORDERS.GET_BY_ID(orderId));
   if (!response.ok) {
     throw new Error('Failed to fetch order');
   }
@@ -28,7 +19,7 @@ const fetchOrder = async (orderId: string) => {
 
 // API function to fetch event details
 const fetchEvent = async (eventId: string) => {
-  const response = await fetch(`http://localhost:3001/api/events/${eventId}`);
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ID(eventId));
   if (!response.ok) {
     throw new Error('Failed to fetch event');
   }
@@ -55,7 +46,7 @@ const OrderConfirmation = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <Loading size="lg" />
+        <div>Loading...</div>
       </div>
     );
   }

@@ -2,26 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useToast } from '@/hooks/use-toast';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Play, 
   Pause, 
   SkipForward, 
-  ThumbsUp, 
-  ThumbsDown, 
+  Heart, 
+  Search, 
+  Plus, 
   Music, 
   Users, 
   Clock,
-  Search,
-  Settings,
-  Mic,
-  Volume2
+  ThumbsUp,
+  ThumbsDown,
+  Volume2,
+  Settings
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { API_CONFIG } from '@/config/api';
 import io from 'socket.io-client';
 
 interface Song {
@@ -81,7 +84,7 @@ interface LivePlaylistProps {
 
 const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
   const { user, token } = useAuth();
-  const { toast } = useToast();
+  // Using toast from sonner
   const [playlist, setPlaylist] = useState<LivePlaylistData | null>(null);
   const [socket, setSocket] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,7 +94,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
 
   // Initialize socket connection
   useEffect(() => {
-    const newSocket = io('http://localhost:3001');
+    const newSocket = io(API_CONFIG.SOCKET_URL);
     setSocket(newSocket);
 
     newSocket.emit('joinEvent', eventId);
@@ -100,10 +103,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
     newSocket.on('songRequested', (data) => {
       if (data.eventId === eventId) {
         fetchPlaylist();
-        toast({
-          title: "New Song Request",
-          description: `${data.song.requestedByName} requested "${data.song.trackName}"`,
-        });
+        toast(`New Song Request: ${data.song.requestedByName} requested "${data.song.trackName}"`);
       }
     });
 
@@ -116,10 +116,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
     newSocket.on('songStatusChanged', (data) => {
       if (data.eventId === eventId) {
         fetchPlaylist();
-        toast({
-          title: "Song Status Updated",
-          description: `Song status changed to ${data.status}`,
-        });
+        toast(`Song Status Updated: Song status changed to ${data.status}`);
       }
     });
 
@@ -131,20 +128,14 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
 
     newSocket.on('liveSessionStarted', (data) => {
       if (data.eventId === eventId) {
-        toast({
-          title: "Live Session Started",
-          description: `${data.djName} started the live DJ session!`,
-        });
+        toast.success(`Live Session Started: ${data.djName} started the live DJ session!`);
         fetchPlaylist();
       }
     });
 
     newSocket.on('liveSessionEnded', (data) => {
       if (data.eventId === eventId) {
-        toast({
-          title: "Live Session Ended",
-          description: "The live DJ session has ended.",
-        });
+        toast.success("Live Session Ended: The live DJ session has ended.");
         fetchPlaylist();
       }
     });
@@ -158,7 +149,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
   // Fetch playlist data
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist`);
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.GET(eventId));
       if (response.ok) {
         const data = await response.json();
         setPlaylist(data);
@@ -173,7 +164,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
     if (!isDJ || !token) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.CREATE(eventId), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -183,18 +174,11 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
 
       if (response.ok) {
         fetchPlaylist();
-        toast({
-          title: "Live Playlist Initialized",
-          description: "Your live DJ playlist is ready!",
-        });
+        toast.success("Live Playlist Initialized: Your live DJ playlist is ready!");
       }
     } catch (error) {
       console.error('Error initializing playlist:', error);
-      toast({
-        title: "Error",
-        description: "Failed to initialize live playlist",
-        variant: "destructive"
-      });
+      toast.error("Failed to initialize live playlist");
     }
   };
 
@@ -204,18 +188,14 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
 
     setIsSearching(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/spotify/search?q=${encodeURIComponent(searchQuery)}&limit=10`);
+      const response = await fetch(`${API_CONFIG.ENDPOINTS.SPOTIFY.SEARCH}?q=${encodeURIComponent(searchQuery)}&limit=10`);
       if (response.ok) {
         const data = await response.json();
         setSearchResults(data.tracks || []);
       }
     } catch (error) {
       console.error('Error searching songs:', error);
-      toast({
-        title: "Search Failed",
-        description: "Unable to search for songs. Please try again.",
-        variant: "destructive"
-      });
+      toast.error("Search Failed: Unable to search for songs. Please try again.");
     } finally {
       setIsSearching(false);
     }
@@ -226,18 +206,14 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
     // Get requester info from user input
     const requesterName = prompt("Enter your name:");
     if (!requesterName) {
-      toast({
-        title: "Name Required",
-        description: "Please enter your name to request a song",
-        variant: "destructive"
-      });
+      toast.error("Name Required: Please enter your name to request a song");
       return;
     }
 
     const requesterEmail = prompt("Enter your email (optional):");
 
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist/request`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.REQUEST_SONG(eventId), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -250,19 +226,12 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
       });
 
       if (response.ok) {
-        toast({
-          title: "Song Requested",
-          description: `"${track.name}" has been added to the queue!`,
-        });
+        toast.success(`Song Requested: "${track.name}" has been added to the queue!`);
         setSearchResults([]);
         setSearchQuery('');
       } else {
         const error = await response.json();
-        toast({
-          title: "Request Failed",
-          description: error.error,
-          variant: "destructive"
-        });
+        toast.error(`Request Failed: ${error.error}`);
       }
     } catch (error) {
       console.error('Error requesting song:', error);
@@ -272,16 +241,12 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
   // Vote on a song
   const voteSong = async (songId: string, voteType: 'up' | 'down') => {
     if (!token) {
-      toast({
-        title: "Login Required",
-        description: "Please log in to vote on songs",
-        variant: "destructive"
-      });
+      toast.error("Login Required: Please log in to vote on songs");
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist/vote`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.VOTE(eventId), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -297,11 +262,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
         // Playlist will update via socket
       } else {
         const error = await response.json();
-        toast({
-          title: "Vote Failed",
-          description: error.error,
-          variant: "destructive"
-        });
+        toast.error(`Vote Failed: ${error.error}`);
       }
     } catch (error) {
       console.error('Error voting:', error);
@@ -313,7 +274,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
     if (!isDJ || !token) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist/songs/${songId}`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.APPROVE_SONG(eventId, songId), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -445,15 +406,15 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
         </motion.div>
       )}
 
-      <Tabs defaultValue={isDJ ? "queue" : "request"} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="request">Request Songs</TabsTrigger>
-          <TabsTrigger value="queue">Queue ({playlist.queue.length})</TabsTrigger>
-          {isDJ && <TabsTrigger value="controls">DJ Controls</TabsTrigger>}
-        </TabsList>
+      <div className="w-full">
+        <div className="flex space-x-1 mb-4">
+          <button className="px-4 py-2 rounded-md bg-primary text-primary-foreground">Request Songs</button>
+          <button className="px-4 py-2 rounded-md bg-muted text-muted-foreground">Queue ({playlist.queue.length})</button>
+          {isDJ && <button className="px-4 py-2 rounded-md bg-muted text-muted-foreground">DJ Controls</button>}
+        </div>
 
         {/* Song Request Tab */}
-        <TabsContent value="request" className="space-y-4">
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -513,10 +474,10 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
               </ScrollArea>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
 
         {/* Queue Tab */}
-        <TabsContent value="queue" className="space-y-4">
+        <div className="space-y-4" style={{display: 'none'}}>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -622,11 +583,11 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
               </ScrollArea>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
 
         {/* DJ Controls Tab */}
         {isDJ && (
-          <TabsContent value="controls" className="space-y-4">
+          <div className="space-y-4" style={{display: 'none'}}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -682,9 +643,9 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
         )}
-      </Tabs>
+      </div>
     </div>
   );
 };

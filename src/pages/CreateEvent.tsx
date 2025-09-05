@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import React, { useState, useRef, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Calendar, 
   Clock, 
@@ -39,23 +31,23 @@ import {
   CreditCard,
   Smartphone
 } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { API_CONFIG } from '@/config/api';
 import SpotifySearch from '../components/SpotifySearch';
 import YouTubeSearch from '../components/YouTubeSearch';
 
 const CreateEvent = () => {
   const { user, token, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  // const { toast } = useToast(); // Using toast from sonner instead
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to create events.",
-        variant: "destructive",
-      });
+      toast.error("Please log in to create events.");
       navigate("/login");
     }
   }, [isAuthenticated, navigate, toast]);
@@ -173,21 +165,13 @@ const CreateEvent = () => {
 
   const handleCreateEvent = async () => {
     if (!isAuthenticated || !token) {
-      toast({
-        title: "Authentication Error",
-        description: "Please log in to create events.",
-        variant: "destructive",
-      });
+      toast.error("Please log in to create events.");
       return;
     }
 
     // Basic validation
     if (!eventData.name.trim() || !eventData.startDate || !eventData.location.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields (name, date, location).",
-        variant: "destructive",
-      });
+      toast.error("Please fill in all required fields (name, date, location).");
       return;
     }
 
@@ -231,7 +215,7 @@ const CreateEvent = () => {
         organizerWhatsApp: eventData.organizerWhatsApp
       };
 
-      const response = await fetch('http://localhost:3001/api/events', {
+      const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.CREATE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -247,21 +231,14 @@ const CreateEvent = () => {
 
       const createdEvent = await response.json();
 
-      toast({
-        title: "Event Created Successfully!",
-        description: `${eventData.name} has been created and is ready for attendees.`,
-      });
+      toast.success(`${eventData.name} has been created and is ready for attendees.`);
 
       // Navigate to dashboard or event details
       navigate('/dashboard');
 
     } catch (error) {
       console.error('Error creating event:', error);
-      toast({
-        title: "Error Creating Event",
-        description: error instanceof Error ? error.message : "An unexpected error occurred.",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }
@@ -399,20 +376,12 @@ const CreateEvent = () => {
     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 
     if (!allowedTypes.includes(file.type)) {
-      toast({
-        title: "Invalid File Type",
-        description: "Please upload a PNG or JPG image.",
-        variant: "destructive",
-      });
+      toast.error("Please upload a PNG or JPG image.");
       return;
     }
 
     if (file.size > maxSize) {
-      toast({
-        title: "File Too Large",
-        description: "Please upload an image smaller than 10MB.",
-        variant: "destructive",
-      });
+      toast.error("Please upload an image smaller than 10MB.");
       return;
     }
 
@@ -422,7 +391,7 @@ const CreateEvent = () => {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch('http://localhost:3001/api/upload/image', {
+      const response = await fetch(API_CONFIG.ENDPOINTS.UPLOAD.IMAGE, {
         method: 'POST',
         body: formData
       });
@@ -438,17 +407,10 @@ const CreateEvent = () => {
         imageUrl: data.url
       }));
 
-      toast({
-        title: "Image Uploaded",
-        description: "Feature image uploaded successfully.",
-      });
+      toast.success("Feature image uploaded successfully.");
     } catch (error) {
       console.error('Feature image upload error:', error);
-      toast({
-        title: "Upload Failed",
-        description: "Failed to upload feature image. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to upload feature image. Please try again.");
     } finally {
       setIsUploadingFeatureImage(false);
     }
@@ -481,20 +443,12 @@ const CreateEvent = () => {
       const maxSize = 10 * 1024 * 1024; // 10MB
 
       if (!validTypes.includes(file.type)) {
-        toast({
-          title: "Invalid File Type",
-          description: "Please upload a PNG or JPG image.",
-          variant: "destructive",
-        });
+        toast.error("Please upload a PNG or JPG image.");
         return;
       }
 
       if (file.size > maxSize) {
-        toast({
-          title: "File Too Large",
-          description: "Please upload an image smaller than 10MB.",
-          variant: "destructive",
-        });
+        toast.error("Please upload an image smaller than 10MB.");
         return;
       }
 
@@ -506,7 +460,7 @@ const CreateEvent = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetch('http://localhost:3001/api/upload/image', {
+        const response = await fetch(API_CONFIG.ENDPOINTS.UPLOAD.IMAGE, {
           method: 'POST',
           body: formData
         });
@@ -524,10 +478,7 @@ const CreateEvent = () => {
         // Extract colors from uploaded flyer
         await extractColorsFromImage(imageUrl);
 
-        toast({
-          title: "Flyer Uploaded",
-          description: "Your event flyer has been uploaded successfully.",
-        });
+        toast.success("Your event flyer has been uploaded successfully.");
       } catch (error) {
         console.error('Upload error:', error);
         
@@ -538,11 +489,7 @@ const CreateEvent = () => {
         };
         reader.readAsDataURL(file);
 
-        toast({
-          title: "Upload Warning",
-          description: "Upload failed, using local preview only.",
-          variant: "destructive",
-        });
+        toast.error("Upload failed, using local preview only.");
       } finally {
         setIsUploadingFlyer(false);
       }
@@ -560,7 +507,7 @@ const CreateEvent = () => {
   const extractColorsFromImage = async (imageUrl) => {
     try {
       setIsExtractingColors(true);
-      const response = await fetch('http://localhost:3001/api/colors/extract', {
+      const response = await fetch(API_CONFIG.ENDPOINTS.COLORS.EXTRACT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -574,10 +521,7 @@ const CreateEvent = () => {
         if (data.colors.length > 0) {
           setSelectedAccentColor(data.colors[0].hex);
         }
-        toast({
-          title: "Colors Extracted",
-          description: `Found ${data.colors.length} accent colors from your flyer!`,
-        });
+        toast.success(`Found ${data.colors.length} accent colors from your flyer!`);
       }
     } catch (error) {
       console.error('Color extraction error:', error);
@@ -589,10 +533,7 @@ const CreateEvent = () => {
   const handleTrackSelect = (track) => {
     if (!selectedSongs.find(song => song.id === track.id)) {
       setSelectedSongs(prev => [...prev, track]);
-      toast({
-        title: "Song Added",
-        description: `"${track.name}" by ${track.artist} added to your event.`,
-      });
+      toast.success(`"${track.name}" by ${track.artist} added to your event.`);
     }
   };
 
@@ -621,10 +562,7 @@ const CreateEvent = () => {
 
   const handleVideoSelect = (video) => {
     setSelectedVideo(video);
-    toast({
-      title: "Video Added",
-      description: `"${video.title}" has been added to your event.`,
-    });
+    toast.success(`"${video.title}" has been added to your event.`);
   };
 
   const handleVideoRemove = () => {
@@ -641,20 +579,12 @@ const CreateEvent = () => {
       const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
       
       if (!isValidType) {
-        toast({
-          title: "Invalid File Type",
-          description: `${file.name} is not a valid image format. Please use PNG, JPG, or JPEG.`,
-          variant: "destructive",
-        });
+        toast.error(`${file.name} is not a valid image format. Please use PNG, JPG, or JPEG.`);
         return false;
       }
       
       if (!isValidSize) {
-        toast({
-          title: "File Too Large",
-          description: `${file.name} is larger than 10MB. Please choose a smaller image.`,
-          variant: "destructive",
-        });
+        toast.error(`${file.name} is larger than 10MB. Please choose a smaller image.`);
         return false;
       }
       
@@ -670,7 +600,7 @@ const CreateEvent = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetch('http://localhost:3001/api/upload/image', {
+        const response = await fetch(API_CONFIG.ENDPOINTS.UPLOAD.IMAGE, {
           method: 'POST',
           body: formData
         });
@@ -692,17 +622,10 @@ const CreateEvent = () => {
       const uploadedImages = await Promise.all(uploadPromises);
       setGalleryImages(prev => [...prev, ...uploadedImages]);
 
-      toast({
-        title: "Images Uploaded",
-        description: `${uploadedImages.length} image(s) uploaded successfully.`,
-      });
+      toast.success(`${uploadedImages.length} image(s) uploaded successfully.`);
     } catch (error) {
       console.error('Gallery upload error:', error);
-      toast({
-        title: "Upload Failed",
-        description: "Some images failed to upload. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Some images failed to upload. Please try again.");
     } finally {
       setIsUploadingGallery(false);
     }

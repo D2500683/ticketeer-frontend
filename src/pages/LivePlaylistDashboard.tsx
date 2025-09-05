@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Play, 
   Pause, 
   SkipForward, 
-  ThumbsUp, 
-  ThumbsDown, 
-  Music, 
+  Settings, 
   Users, 
+  Music, 
   Clock,
-  Settings,
-  Mic,
-  Volume2,
-  ArrowLeft,
-  CheckCircle,
-  XCircle,
+  ThumbsUp,
+  ThumbsDown,
+  Check,
+  X,
   BarChart3,
-  Radio
+  Volume2,
+  Shuffle,
+  Repeat,
+  ArrowLeft
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+import { API_CONFIG } from '@/config/api';
 import io from 'socket.io-client';
 
 interface Song {
@@ -86,7 +88,6 @@ const LivePlaylistDashboard: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { user, token } = useAuth();
-  const { toast } = useToast();
   
   const [playlist, setPlaylist] = useState<LivePlaylistData | null>(null);
   const [event, setEvent] = useState<any>(null);
@@ -98,7 +99,7 @@ const LivePlaylistDashboard: React.FC = () => {
   useEffect(() => {
     if (!eventId) return;
 
-    const newSocket = io('http://localhost:3001');
+    const newSocket = io(API_CONFIG.SOCKET_URL);
     setSocket(newSocket);
 
     newSocket.emit('joinEvent', eventId);
@@ -107,10 +108,7 @@ const LivePlaylistDashboard: React.FC = () => {
     newSocket.on('songRequested', (data) => {
       if (data.eventId === eventId) {
         fetchPlaylist();
-        toast({
-          title: "New Song Request",
-          description: `${data.song.requestedByName} requested "${data.song.trackName}"`,
-        });
+        toast.success(`${data.song.requestedByName} requested "${data.song.trackName}"`);
       }
     });
 
@@ -129,18 +127,14 @@ const LivePlaylistDashboard: React.FC = () => {
   // Fetch event and playlist data
   const fetchEvent = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/events/${eventId}`);
+      const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ID(eventId));
       if (response.ok) {
         const eventData = await response.json();
         setEvent(eventData);
         
         // Check if user is authorized (event organizer)
         if (eventData.organizer !== user?.id) {
-          toast({
-            title: "Access Denied",
-            description: "You are not authorized to manage this event's playlist",
-            variant: "destructive"
-          });
+          toast.error("You are not authorized to manage this event's playlist");
           navigate('/dashboard');
           return;
         }
@@ -152,7 +146,7 @@ const LivePlaylistDashboard: React.FC = () => {
 
   const fetchPlaylist = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist`);
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.GET(eventId));
       if (response.ok) {
         const data = await response.json();
         setPlaylist(data);
@@ -175,7 +169,7 @@ const LivePlaylistDashboard: React.FC = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist/songs/${songId}`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.APPROVE_SONG(eventId, songId), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -186,10 +180,7 @@ const LivePlaylistDashboard: React.FC = () => {
 
       if (response.ok) {
         fetchPlaylist();
-        toast({
-          title: "Song Updated",
-          description: `Song ${status} successfully`,
-        });
+        toast.success(`Song ${status} successfully`);
       }
     } catch (error) {
       console.error('Error updating song status:', error);
@@ -200,7 +191,7 @@ const LivePlaylistDashboard: React.FC = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/live-playlist/events/${eventId}/playlist/settings`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.UPDATE_SETTINGS(eventId), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -211,10 +202,7 @@ const LivePlaylistDashboard: React.FC = () => {
 
       if (response.ok) {
         fetchPlaylist();
-        toast({
-          title: "Settings Updated",
-          description: "Playlist settings have been updated",
-        });
+        toast.success("Playlist settings have been updated");
       }
     } catch (error) {
       console.error('Error updating settings:', error);
@@ -228,10 +216,7 @@ const LivePlaylistDashboard: React.FC = () => {
         djId: user?.id,
         djName: user?.username
       });
-      toast({
-        title: "Live Session Started",
-        description: "Your live DJ session is now active!",
-      });
+      toast.success("Your live DJ session is now active!");
     }
   };
 
@@ -241,10 +226,7 @@ const LivePlaylistDashboard: React.FC = () => {
         eventId,
         djId: user?.id
       });
-      toast({
-        title: "Live Session Ended",
-        description: "Your live DJ session has been stopped",
-      });
+      toast.success("Your live DJ session has been stopped");
     }
   };
 
@@ -302,7 +284,7 @@ const LivePlaylistDashboard: React.FC = () => {
               </Button>
               <div>
                 <h1 className="text-2xl font-bold flex items-center gap-2">
-                  <Mic className="h-6 w-6 text-orange-500" />
+                  <Music className="h-6 w-6 text-orange-500" />
                   DJ Dashboard
                 </h1>
                 <p className="text-muted-foreground">{event?.name}</p>
@@ -319,7 +301,7 @@ const LivePlaylistDashboard: React.FC = () => {
               
               {!playlist.isActive ? (
                 <Button onClick={startLiveSession} className="bg-green-600 hover:bg-green-700">
-                  <Radio className="h-4 w-4 mr-2" />
+                  <Play className="h-4 w-4 mr-2" />
                   Go Live
                 </Button>
               ) : (
@@ -407,15 +389,11 @@ const LivePlaylistDashboard: React.FC = () => {
               <CardContent>
                 <ScrollArea className="h-96">
                   <div className="space-y-3">
-                    <AnimatePresence>
                       {playlist.queue
                         .sort((a, b) => b.voteScore - a.voteScore)
                         .map((song, index) => (
-                          <motion.div
+                          <div
                             key={song._id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
                             className="flex items-center gap-4 p-4 border rounded-lg bg-card"
                           >
                             <div className="text-sm font-medium text-muted-foreground w-8">
@@ -454,7 +432,7 @@ const LivePlaylistDashboard: React.FC = () => {
                                   onClick={() => updateSongStatus(song._id, 'approved')}
                                   className="h-8 w-8 p-0 text-green-600 hover:text-green-700"
                                 >
-                                  <CheckCircle className="h-4 w-4" />
+                                  <Check className="h-4 w-4" />
                                 </Button>
                                 <Button
                                   size="sm"
@@ -462,7 +440,7 @@ const LivePlaylistDashboard: React.FC = () => {
                                   onClick={() => updateSongStatus(song._id, 'rejected')}
                                   className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
                                 >
-                                  <XCircle className="h-4 w-4" />
+                                  <X className="h-4 w-4" />
                                 </Button>
                                 <Button
                                   size="sm"
@@ -474,9 +452,8 @@ const LivePlaylistDashboard: React.FC = () => {
                                 </Button>
                               </div>
                             </div>
-                          </motion.div>
+                          </div>
                         ))}
-                    </AnimatePresence>
                     
                     {playlist.queue.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">

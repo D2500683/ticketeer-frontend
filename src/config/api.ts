@@ -44,6 +44,7 @@ export const API_CONFIG = {
       EVENTS_SUMMARY: `${API_BASE_URL}/api/users/events-summary`,
       TICKETS: `${API_BASE_URL}/api/users/tickets`,
       DELETE_ACCOUNT: `${API_BASE_URL}/api/users/account`,
+      ATTENDEES: `${API_BASE_URL}/api/events/user/attendees`,
     },
     UPLOAD: {
       IMAGE: `${API_BASE_URL}/api/upload/image`,
@@ -52,6 +53,10 @@ export const API_CONFIG = {
     SPOTIFY: {
       SEARCH: `${API_BASE_URL}/api/spotify/search`,
       TRACK: (id: string) => `${API_BASE_URL}/api/spotify/track/${id}`,
+    },
+    YOUTUBE: {
+      SEARCH: `${API_BASE_URL}/api/youtube/search`,
+      VIDEO: (id: string) => `${API_BASE_URL}/api/youtube/video/${id}`,
     },
     PLAYLIST: {
       GET: (eventId: string) => `${API_BASE_URL}/api/playlists/events/${eventId}/playlist`,
@@ -67,10 +72,6 @@ export const API_CONFIG = {
     },
     COLORS: {
       EXTRACT: `${API_BASE_URL}/api/colors/extract`,
-    },
-    YOUTUBE: {
-      SEARCH: `${API_BASE_URL}/api/youtube/search`,
-      VIDEO: (id: string) => `${API_BASE_URL}/api/youtube/video/${id}`,
     }
   }
 };

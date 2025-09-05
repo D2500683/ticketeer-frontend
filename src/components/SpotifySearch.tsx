@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Music, Play, Plus, X } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
+import { Search, Play, Plus, ExternalLink, Music, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { API_CONFIG } from '@/config/api';
 
 interface SpotifyTrack {
   id: string;
@@ -51,7 +52,7 @@ export default function SpotifySearch({
 
     setIsSearching(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/spotify/search?q=${encodeURIComponent(query)}&limit=10`);
+      const response = await fetch(`${API_CONFIG.ENDPOINTS.SPOTIFY.SEARCH}?q=${encodeURIComponent(query)}&limit=10`);
       const data = await response.json();
       
       if (data.success) {

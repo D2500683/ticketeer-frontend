@@ -9,13 +9,14 @@ import { Search, Filter, Download, Mail, Phone, MapPin, Calendar, Users, UserChe
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { API_CONFIG } from "@/config/api";
 
 // API functions
 const fetchAttendees = async (token: string) => {
   if (!token) throw new Error('No authentication token found');
   
   try {
-    const response = await fetch('http://localhost:3001/api/events/user/attendees', {
+    const response = await fetch(API_CONFIG.ENDPOINTS.USER.ATTENDEES, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -40,7 +41,7 @@ const fetchUserEvents = async (token: string) => {
   if (!token) throw new Error('No authentication token found');
   
   try {
-    const response = await fetch('http://localhost:3001/api/events/user/my-events', {
+    const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ORGANIZER, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
