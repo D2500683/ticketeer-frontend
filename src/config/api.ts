@@ -1,6 +1,6 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.VITE_API_URL || 'https://ticketeer-backend-2.onrender.com';
+const SOCKET_URL = process.env.VITE_SOCKET_URL || 'https://ticketeer-backend-2.onrender.com';
 
 export const API_CONFIG = {
   BASE_URL: API_BASE_URL,

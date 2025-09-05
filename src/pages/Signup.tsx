@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import LightRays from '../components/backgrounds/lightrays'
-import { useNavigate } from 'react-router-dom' // Add this import
+import { useNavigate } from 'react-router-dom'
+import Prism from '../components/backgrounds/prism'
 import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import { API_CONFIG } from '@/config/api'
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -35,7 +36,7 @@ const Signup = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/auth/register', {
+      const res = await fetch(API_CONFIG.ENDPOINTS.AUTH.SIGNUP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

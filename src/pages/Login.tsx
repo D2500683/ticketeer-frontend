@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useAuth } from '@/contexts/AuthContext'
+import { API_CONFIG } from '@/config/api'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -24,7 +25,7 @@ const Login = () => {
     setSuccess('');
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/auth/login', {
+      const res = await fetch(API_CONFIG.ENDPOINTS.AUTH.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
