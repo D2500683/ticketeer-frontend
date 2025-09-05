@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, XCircle, Clock, MessageCircle, Phone, Mail, Calendar, DollarSign, Users, TrendingUp, ArrowLeft, RefreshCw, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_CONFIG } from '@/config/api'
 
 interface Order {
   _id: string;
@@ -70,7 +71,7 @@ const AdminPanel: React.FC = () => {
         throw new Error('No authentication token found');
       }
       
-      const response = await fetch('http://localhost:3001/api/admin/orders/pending', {
+      const response = await fetch(API_CONFIG.ENDPOINTS.ADMIN.ORDERS_PENDING, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -102,7 +103,7 @@ const AdminPanel: React.FC = () => {
         throw new Error('No authentication token found');
       }
       
-      const response = await fetch('http://localhost:3001/api/admin/orders/stats', {
+      const response = await fetch(API_CONFIG.ENDPOINTS.ADMIN.ORDERS_STATS, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -126,7 +127,7 @@ const AdminPanel: React.FC = () => {
   // Verification mutation
   const verifyOrderMutation = useMutation({
     mutationFn: async ({ orderId, action, notes }: { orderId: string; action: 'approve' | 'reject'; notes: string }) => {
-      const response = await fetch(`http://localhost:3001/api/admin/orders/${orderId}/verify`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.ADMIN.ORDERS_VERIFY(orderId), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
