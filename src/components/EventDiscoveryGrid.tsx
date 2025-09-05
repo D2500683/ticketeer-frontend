@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { API_CONFIG } from '@/config/api'
 
 // API function to fetch events
 const fetchEvents = async () => {
   try {
-    console.log('Fetching events from:', 'http://localhost:3001/api/events?limit=100');
-    const response = await fetch('http://localhost:3001/api/events?limit=100');
+    console.log('Fetching events from:', `${API_CONFIG.ENDPOINTS.EVENTS.BASE}?limit=100`);
+    const response = await fetch(`${API_CONFIG.ENDPOINTS.EVENTS.BASE}?limit=100`);
     console.log('Response status:', response.status);
     console.log('Response ok:', response.ok);
     

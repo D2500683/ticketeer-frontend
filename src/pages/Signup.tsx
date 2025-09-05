@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Prism from '../components/backgrounds/prism'
+import LightRays from '../components/backgrounds/lightrays'
+import { useNavigate } from 'react-router-dom' // Add this import
 import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
