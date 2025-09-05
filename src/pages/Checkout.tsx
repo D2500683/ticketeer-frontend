@@ -16,7 +16,7 @@ import MCBJuiceManualPayment from "@/components/MCBJuiceManualPayment";
 
 // API function to fetch single event
 const fetchEvent = async (id: string) => {
-  const response = await fetch(`http://localhost:3001/api/events/${id}`);
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch event');
   }
@@ -25,7 +25,7 @@ const fetchEvent = async (id: string) => {
 
 // API function to create order
 const createOrder = async (orderData: any) => {
-  const response = await fetch('http://localhost:3001/api/orders', {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
