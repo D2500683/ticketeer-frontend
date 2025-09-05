@@ -1,15 +1,18 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { CalendarDays, DollarSign, Users, TrendingUp, Eye, ShoppingCart, RefreshCw, Edit, Trash2, ExternalLink, Filter, Mic } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { checkAuthStatus, clearAuthStorage } from "@/utils/authDebug";
+import { useAuth } from '@/contexts/AuthContext'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { CalendarDays, Users, DollarSign, TrendingUp, Plus, Eye, Edit, Trash2, Music, ShoppingCart, RefreshCw, ExternalLink, Filter, Mic } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { format } from 'date-fns'
+import { API_CONFIG } from '@/config/api'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts'
+import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { checkAuthStatus, clearAuthStorage } from "@/utils/authDebug"
 
 // API functions
 const fetchAnalytics = async (token: string) => {
@@ -18,7 +21,7 @@ const fetchAnalytics = async (token: string) => {
   }
   
   try {
-    const response = await fetch('http://localhost:3001/api/events/user/analytics', {
+    const response = await fetch(API_CONFIG.ENDPOINTS.ANALYTICS.USER, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -62,7 +65,7 @@ const fetchUserEvents = async (token: string) => {
   }
   
   try {
-    const response = await fetch('http://localhost:3001/api/events/user/my-events', {
+    const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ORGANIZER, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
