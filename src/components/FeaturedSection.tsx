@@ -1,12 +1,15 @@
-import { ArrowRight, Clock, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { useQuery } from '@tanstack/react-query'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { API_CONFIG } from '@/config/api'
 import { Link } from 'react-router-dom'
 import { useMemo } from 'react'
+import { ArrowRight, Clock, MapPin } from 'lucide-react'
 
 // API function to fetch events
 const fetchEvents = async () => {
-  const response = await fetch('http://localhost:3001/api/events');
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.BASE);
   if (!response.ok) {
     throw new Error('Failed to fetch events');
   }

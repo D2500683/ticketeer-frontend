@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Loading } from "@/components/ui/loading";
-import { CalendarDays, MapPin, Search, Filter, Users, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { CalendarDays, MapPin, Users, Search, Filter } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import { API_CONFIG } from '@/config/api'
 
 // API function to fetch all public events
 const fetchPublicEvents = async () => {
-  const response = await fetch('http://localhost:3001/api/events');
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.BASE);
   if (!response.ok) {
     throw new Error('Failed to fetch events');
   }
@@ -62,13 +63,7 @@ const Events = () => {
 
   const categories = ["all", "music", "wellness", "art", "food", "sports", "tech"];
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loading size="lg" />
-      </div>
-    );
-  }
+  if (isLoading) return <div>Loading...</div>;
 
   if (error) {
     return (
