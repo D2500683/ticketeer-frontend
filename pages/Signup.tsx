@@ -313,20 +313,7 @@ const Signup = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="border-border text-foreground hover:bg-accent/20"
-              >
-                Google
-              </Button>
-              <Button
-                variant="outline"
-                className="border-border text-foreground hover:bg-accent/20"
-              >
-                Apple
-              </Button>
-            </div>
+            
           </div>
         </div>
       </div>
