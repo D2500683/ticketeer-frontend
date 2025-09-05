@@ -274,7 +274,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
     if (!isDJ || !token) return;
 
     try {
-      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.APPROVE_SONG(eventId, songId), {
+      const response = await fetch(API_CONFIG.ENDPOINTS.PLAYLIST.UPDATE_SONG(eventId, songId), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
