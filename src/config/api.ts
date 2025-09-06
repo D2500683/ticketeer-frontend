@@ -1,6 +1,6 @@
 // API Configuration
-const API_BASE_URL = process.env.VITE_API_URL || 'https://ticketeer-backend-2.onrender.com';
-const SOCKET_URL = process.env.VITE_SOCKET_URL || 'https://ticketeer-backend-2.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ticketeer-backend-2.onrender.com';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://ticketeer-backend-2.onrender.com';
 
 // Helper function to make API requests with CORS handling
 export const apiRequest = async (url: string, options: RequestInit = {}) => {

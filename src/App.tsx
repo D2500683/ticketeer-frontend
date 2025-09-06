@@ -8,6 +8,7 @@ import "@/utils/authDebug"; // Load auth debugging utilities
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ConfirmEmail from "./pages/ConfirmEmail";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/discover" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/confirm-email/:token" element={<ConfirmEmail />} />
             {/* Protected Routes */}
             <Route path="/dashboard" element={
               <ProtectedRoute>

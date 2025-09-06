@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import LightRays from '../components/backgrounds/lightrays'
 import { useNavigate } from 'react-router-dom' // Add this import
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -127,7 +127,7 @@ const Signup = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     className="mt-1 bg-accent/20 border-border text-foreground placeholder:text-muted-foreground"
-                    placeholder="Daniel"
+                    placeholder=""
                   />
                 </div>
                 <div>
@@ -140,7 +140,7 @@ const Signup = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     className="mt-1 bg-accent/20 border-border text-foreground placeholder:text-muted-foreground"
-                    placeholder="Ihemegbulem"
+                    placeholder=""
                   />
                 </div>
               </div>
@@ -156,7 +156,7 @@ const Signup = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="mt-1 bg-accent/20 border-border text-foreground placeholder:text-muted-foreground"
-                  placeholder="danielihemegbulem"
+                  placeholder=""
                   required
                 />
               </div>
@@ -172,7 +172,7 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 bg-accent/20 border-border text-foreground placeholder:text-muted-foreground"
-                  placeholder="dihemegbulem@gmail.com"
+                  placeholder=""
                 />
               </div>
 
@@ -183,8 +183,8 @@ const Signup = () => {
                 </Label>
                 <div className="flex mt-1">
                   <div className="flex items-center px-3 bg-accent/20 border border-r-0 border-border rounded-l-md">
-                    <span className="text-sm">🇺🇸</span>
-                    <span className="ml-1 text-muted-foreground text-sm">+1</span>
+                    <span className="text-sm">🇲🇺</span>
+                    <span className="ml-1 text-muted-foreground text-sm">+230</span>
                   </div>
                   <Input
                     id="phone"
@@ -192,7 +192,7 @@ const Signup = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="bg-accent/20 border-border text-foreground placeholder:text-muted-foreground rounded-l-none"
-                    placeholder="(555) 123-4567"
+                    placeholder="(230) 123-4567"
                   />
                 </div>
               </div>
@@ -297,38 +297,18 @@ const Signup = () => {
               className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-full py-3 text-lg font-semibold"
               disabled={!agreeToTerms || loading}
             >
-              {loading ? 'Registering...' : 'Join Ticketeer'}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Registering...
+                </>
+              ) : (
+                'Join Ticketeer'
+              )}
             </Button>
           </form>
 
-          {/* Social signup */}
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-background text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="border-border text-foreground hover:bg-accent/20"
-              >
-                Google
-              </Button>
-              <Button
-                variant="outline"
-                className="border-border text-foreground hover:bg-accent/20"
-              >
-                Apple
-              </Button>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
