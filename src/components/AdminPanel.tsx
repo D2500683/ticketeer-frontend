@@ -424,7 +424,9 @@ const AdminPanel: React.FC = () => {
                           <DialogContent className="max-w-2xl mx-4 border-gray-700" style={{backgroundColor: '#1A1A1A'}}>
                             <DialogHeader>
                               <DialogTitle className="text-lg sm:text-xl break-words text-white">
-                                {order.paymentMethod === 'mcb-juice-whatsapp' ? 'WhatsApp Payment Verification' : 'Screenshot Payment Verification'} - Order #{order.orderNumber}
+                                {order.paymentMethod === 'mcb-juice-whatsapp' ? 'MCB Juice WhatsApp Verification' : 
+                                 order.paymentMethod === 'bank-transfer-whatsapp' ? 'Bank Transfer WhatsApp Verification' : 
+                                 'Screenshot Payment Verification'} - Order #{order.orderNumber}
                               </DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 sm:space-y-6">
@@ -445,14 +447,14 @@ const AdminPanel: React.FC = () => {
                                 </div>
                               </div>
                               
-                              {order.paymentMethod === 'mcb-juice-whatsapp' && (
+                              {(order.paymentMethod === 'mcb-juice-whatsapp' || order.paymentMethod === 'bank-transfer-whatsapp') && (
                                 <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
                                   <h4 className="font-medium text-blue-300 mb-2 flex items-center">
                                     <MessageCircle className="h-4 w-4 mr-2" />
                                     WhatsApp Payment Confirmation
                                   </h4>
                                   <p className="text-sm text-blue-200 mb-3">
-                                    Customer was instructed to send payment confirmation via WhatsApp to {order.organizerWhatsApp}.
+                                    Customer was instructed to send {order.paymentMethod === 'bank-transfer-whatsapp' ? 'bank transfer' : 'MCB Juice payment'} confirmation via WhatsApp to {order.organizerWhatsApp}.
                                     Please check your WhatsApp messages for payment confirmation from this customer.
                                   </p>
                                   <Button
