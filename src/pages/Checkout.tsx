@@ -11,6 +11,7 @@ import { ArrowLeft, CreditCard, Lock, Mail, User, Phone, MapPin, Calendar, Smart
 import { useToast } from "@/hooks/use-toast";
 import { mockOrderApi } from "@/services/mockOrderApi";
 import MCBJuiceManualPayment from "@/components/MCBJuiceManualPayment";
+import BankTransferManualPayment from "@/components/BankTransferManualPayment";
 
 // Clean black and white theme - no gradients needed
 
@@ -322,88 +323,19 @@ const Checkout = () => {
                 
                 {/* Bank Transfer Option */}
                 {accountNumber && (
-                  <div style={{border: '2px solid red', padding: '10px', margin: '10px'}}>
-                    DEBUG: Account number found: {accountNumber}
-                  </div>
-                )}
-                {accountNumber && (
-                  <div className="space-y-3 sm:space-y-4 w-full">
-                    <div className="relative w-full">
-                      <div className="flex items-center justify-between p-3 sm:p-4 lg:p-6 bg-white border-2 border-gray-200 rounded-lg hover:border-black transition-all duration-200 cursor-pointer"
-                           onClick={() => setShowBankTransfer(!showBankTransfer)}>
-                        <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 min-w-0 flex-1">
-                          <div className="flex-shrink-0">
-                            <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                              showBankTransfer 
-                                ? 'bg-black border-black' 
-                                : 'border-gray-300 hover:border-black'
-                            }`}>
-                              {showBankTransfer && (
-                                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-                            <CreditCard className="h-5 w-5 sm:h-6 sm:w-6 text-black shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <span className="font-semibold text-black text-sm sm:text-base lg:text-lg block truncate">Bank Transfer</span>
-                              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 leading-tight">
-                                Direct bank account transfer
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <div className={`transform transition-transform duration-200 ${showBankTransfer ? 'rotate-180' : ''}`}>
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Bank Transfer Details */}
-                    {showBankTransfer && (
-                      <div className="animate-in slide-in-from-top-2 duration-300 w-full">
-                        <Card className="border border-gray-200 shadow-sm bg-white w-full">
-                          <CardContent className="p-3 sm:p-4 lg:p-6">
-                            <div className="space-y-4">
-                              <h4 className="font-semibold text-black text-sm sm:text-base lg:text-lg">Bank Transfer Details</h4>
-                              
-                              {/* Account Number */}
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-blue-50 rounded-lg border-2 border-blue-200 gap-2">
-                                <span className="text-sm sm:text-base text-blue-700 font-medium">Account Number:</span>
-                                <div className="flex items-center gap-2">
-                                  <span className="font-bold text-xl sm:text-2xl text-blue-800 break-all">{accountNumber}</span>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => copyToClipboard(accountNumber, 'Account number')}
-                                    className="p-1 h-auto text-blue-600 hover:text-blue-800 hover:bg-blue-100"
-                                  >
-                                    <Copy className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                              
-                              {/* Amount */}
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-white rounded-lg border-2 border-gray-200 gap-2">
-                                <span className="text-sm sm:text-base text-gray-700 font-medium">Amount to transfer:</span>
-                                <span className="font-bold text-xl sm:text-2xl text-black break-all">Rs {checkoutData.totalPrice.toFixed(2)}</span>
-                              </div>
-                              
-                              <div className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                                Transfer the exact amount to the account number above and contact the organizer for verification.
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    )}
-                  </div>
+                  <BankTransferManualPayment
+                    checkoutData={checkoutData}
+                    customerInfo={customerInfo}
+                    onSuccess={(orderId) => navigate(`/confirmation/${orderId}`)}
+                    onError={(error) => {
+                      toast({
+                        title: "Payment Failed",
+                        description: error,
+                        variant: "destructive",
+                      });
+                    }}
+                    disabled={isProcessing}
+                  />
                 )}
               </CardContent>
             </Card>
