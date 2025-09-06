@@ -229,20 +229,20 @@ const AdminPanel: React.FC = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-4 sm:p-6">
+      <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
         {/* Stats Cards */}
         {adminStats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
             <Card className="border border-gray-700 shadow-sm hover:shadow-md transition-shadow" style={{backgroundColor: '#1A1A1A'}}>
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm font-medium text-gray-300">Pending Verification</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-orange-400">
+                    <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-300">Pending Verification</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-400">
                       {(adminStats.stats.pending_whatsapp_verification?.count || 0) + (adminStats.stats.pending_verification?.count || 0)}
                     </p>
                   </div>
-                  <Clock className="h-8 w-8 sm:h-10 sm:w-10 text-orange-500" />
+                  <Clock className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-orange-500" />
                 </div>
                 <p className="text-xs text-gray-400 mt-2">
                   {formatCurrency((adminStats.stats.pending_whatsapp_verification?.totalAmount || 0) + (adminStats.stats.pending_verification?.totalAmount || 0))} total
@@ -254,12 +254,12 @@ const AdminPanel: React.FC = () => {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm font-medium text-gray-300">Completed</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-green-400">
+                    <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-300">Completed</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-400">
                       {adminStats.stats.completed.count}
                     </p>
                   </div>
-                  <CheckCircle className="h-8 w-8 sm:h-10 sm:w-10 text-green-500" />
+                  <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-green-500" />
                 </div>
                 <p className="text-xs text-gray-400 mt-2">
                   {formatCurrency(adminStats.stats.completed.totalAmount)} total
@@ -271,14 +271,14 @@ const AdminPanel: React.FC = () => {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm font-medium text-gray-300">Total Revenue</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-blue-400">
+                    <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-300">Total Revenue</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-400">
                       {formatCurrency(adminStats.stats.completed.totalAmount)}
                     </p>
                   </div>
-                  <TrendingUp className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500" />
+                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-blue-500" />
                 </div>
-                <p className="text-xs text-gray-400 mt-2">From verified orders</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2">From verified orders</p>
               </CardContent>
             </Card>
           </div>
@@ -286,19 +286,19 @@ const AdminPanel: React.FC = () => {
 
         {/* Pending Orders */}
         <Card className="border border-gray-700 shadow-sm" style={{backgroundColor: '#1A1A1A'}}>
-          <CardHeader className="pb-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <CardTitle className="flex items-center gap-2 text-white text-lg sm:text-xl">
-                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-orange-500" />
-                <span className="text-sm sm:text-base">Pending Orders ({pendingOrders?.length || 0})</span>
+          <CardHeader className="pb-3 sm:pb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <CardTitle className="flex items-center gap-2 text-white text-base sm:text-lg lg:text-xl">
+                <Clock className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-orange-500" />
+                <span className="text-sm sm:text-base lg:text-lg">Pending Orders ({pendingOrders?.length || 0})</span>
               </CardTitle>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                 <Button
                   onClick={() => refetchOrders()}
                   variant="outline"
                   size="sm"
                   disabled={isRefetching}
-                  className="border-orange-600 text-orange-400 hover:bg-orange-900/20 text-xs sm:text-sm"
+                  className="border-orange-600 text-orange-400 hover:bg-orange-900/20 text-xs sm:text-sm w-full sm:w-auto"
                 >
                   {isRefetching ? (
                     <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
@@ -307,7 +307,7 @@ const AdminPanel: React.FC = () => {
                   )}
                   <span className="ml-1 sm:ml-2">Refresh</span>
                 </Button>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-gray-400 text-center sm:text-left">
                   Auto-refresh: {autoRefreshCountdown}s
                 </div>
               </div>
@@ -315,43 +315,43 @@ const AdminPanel: React.FC = () => {
           </CardHeader>
           <CardContent>
             {pendingLoading ? (
-              <div className="flex items-center justify-center py-8 sm:py-12">
-                <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-orange-400" />
-                <span className="ml-2 text-gray-300 text-sm sm:text-base">Loading orders...</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center py-6 sm:py-8 lg:py-12 gap-2 sm:gap-3">
+                <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 animate-spin text-orange-400" />
+                <span className="text-gray-300 text-sm sm:text-base">Loading orders...</span>
               </div>
             ) : pendingError ? (
-              <div className="text-center py-8 sm:py-12">
-                <p className="text-red-400 mb-4 text-sm sm:text-base">Failed to load orders</p>
+              <div className="text-center py-6 sm:py-8 lg:py-12">
+                <p className="text-red-400 mb-3 sm:mb-4 text-sm sm:text-base">Failed to load orders</p>
                 <Button onClick={() => refetchOrders()} variant="outline" size="sm" className="text-xs sm:text-sm border-gray-600 text-gray-300 hover:bg-gray-700">
                   Try Again
                 </Button>
               </div>
             ) : !pendingOrders?.length ? (
-              <div className="text-center py-8 sm:py-12">
-                <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-500 mx-auto mb-4" />
+              <div className="text-center py-6 sm:py-8 lg:py-12">
+                <CheckCircle className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 text-green-500 mx-auto mb-3 sm:mb-4" />
                 <p className="text-gray-300 text-sm sm:text-base">No pending orders</p>
                 <p className="text-gray-400 text-xs sm:text-sm mt-1">All caught up!</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-700">
                 {pendingOrders.map((order) => (
-                  <div key={order._id} className="p-4 sm:p-6 transition-colors hover:bg-opacity-20" onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2A2A2A'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                  <div key={order._id} className="p-3 sm:p-4 lg:p-6 transition-colors hover:bg-opacity-20" onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2A2A2A'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
                       {/* Order Details */}
                       <div className="space-y-3 sm:space-y-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                          <h3 className="font-semibold text-white text-sm sm:text-base break-words">
+                        <div className="flex flex-col sm:flex-row sm:items-start lg:items-center justify-between gap-2 sm:gap-3">
+                          <h3 className="font-semibold text-white text-sm sm:text-base lg:text-lg break-words">
                             Order #{order.orderNumber}
                           </h3>
                           <Badge 
                             variant={order.paymentStatus === 'pending_whatsapp_verification' ? 'secondary' : 'outline'}
-                            className="text-xs w-fit bg-orange-900/30 text-orange-300 border-orange-600"
+                            className="text-xs sm:text-sm w-fit bg-orange-900/30 text-orange-300 border-orange-600 shrink-0"
                           >
                             {order.paymentStatus === 'pending_whatsapp_verification' ? 'WhatsApp Verification' : 'Manual Verification'}
                           </Badge>
                         </div>
                         
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                           <div>
                             <span className="text-gray-400">Customer:</span>
                             <p className="font-medium text-white break-words">{order.customerInfo.firstName} {order.customerInfo.lastName}</p>
@@ -367,9 +367,9 @@ const AdminPanel: React.FC = () => {
                         </div>
                         
                         {order.paymentReference && (
-                          <div className="bg-orange-900/20 border border-orange-600 rounded-lg p-3">
-                            <span className="text-xs text-orange-300 font-medium">Payment Reference:</span>
-                            <p className="font-mono text-sm text-orange-200 break-all">{order.paymentReference}</p>
+                          <div className="bg-orange-900/20 border border-orange-600 rounded-lg p-3 sm:p-4">
+                            <span className="text-xs sm:text-sm text-orange-300 font-medium">Payment Reference:</span>
+                            <p className="font-mono text-sm sm:text-base text-orange-200 break-all mt-1">{order.paymentReference}</p>
                           </div>
                         )}
                       </div>
@@ -378,32 +378,34 @@ const AdminPanel: React.FC = () => {
                         {order.paymentScreenshot && (
                           <div>
                             <span className="text-xs sm:text-sm text-gray-400 block mb-2">Payment Screenshot:</span>
-                            <img 
-                              src={order.paymentScreenshot} 
-                              alt="Payment Screenshot" 
-                              className="w-full max-w-sm mx-auto rounded-lg border border-gray-600 cursor-pointer hover:opacity-90 transition-opacity"
-                              onClick={() => setSelectedImage(order.paymentScreenshot)}
-                            />
+                            <div className="flex justify-center">
+                              <img 
+                                src={order.paymentScreenshot} 
+                                alt="Payment Screenshot" 
+                                className="w-full max-w-xs sm:max-w-sm rounded-lg border border-gray-600 cursor-pointer hover:opacity-90 transition-opacity"
+                                onClick={() => setSelectedImage(order.paymentScreenshot)}
+                              />
+                            </div>
                           </div>
                         )}
                         {order.paymentStatus === 'pending_whatsapp_verification' && (
                           <Button
                             onClick={() => openWhatsApp(order.customerInfo.phone, `${order.customerInfo.firstName} ${order.customerInfo.lastName}`, order.paymentReference || order.orderNumber)}
                             variant="outline"
-                            className="w-full text-xs sm:text-sm py-2 border-green-600 text-green-400 hover:bg-green-900/20"
+                            className="w-full text-xs sm:text-sm py-2 sm:py-3 border-green-600 text-green-400 hover:bg-green-900/20"
                           >
                             <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             Send WhatsApp Confirmation
                           </Button>
                         )}
                         
-                        <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                           <Button
                             onClick={() => {
                               setSelectedOrder(order);
                               setDialogOpen(true);
                             }}
-                            className="bg-green-600 hover:bg-green-700 text-white flex-1 text-xs sm:text-sm py-2"
+                            className="bg-green-600 hover:bg-green-700 text-white flex-1 text-xs sm:text-sm py-2 sm:py-3"
                           >
                             <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             Approve
@@ -414,23 +416,23 @@ const AdminPanel: React.FC = () => {
                               setDialogOpen(true);
                             }}
                             variant="destructive"
-                            className="flex-1 text-xs sm:text-sm py-2 bg-red-600 hover:bg-red-700"
+                            className="flex-1 text-xs sm:text-sm py-2 sm:py-3 bg-red-600 hover:bg-red-700"
                           >
                             <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                             Reject
                           </Button>
                         </div>
                         <Dialog open={dialogOpen && selectedOrder?._id === order._id} onOpenChange={setDialogOpen}>
-                          <DialogContent className="max-w-2xl mx-4 border-gray-700" style={{backgroundColor: '#1A1A1A'}}>
+                          <DialogContent className="max-w-xs sm:max-w-lg lg:max-w-2xl xl:max-w-4xl mx-2 sm:mx-4 border-gray-700" style={{backgroundColor: '#1A1A1A'}}>
                             <DialogHeader>
-                              <DialogTitle className="text-lg sm:text-xl break-words text-white">
+                              <DialogTitle className="text-base sm:text-lg lg:text-xl break-words text-white">
                                 {order.paymentMethod === 'mcb-juice-whatsapp' ? 'MCB Juice WhatsApp Verification' : 
                                  order.paymentMethod === 'bank-transfer-whatsapp' ? 'Bank Transfer WhatsApp Verification' : 
                                  'Screenshot Payment Verification'} - Order #{order.orderNumber}
                               </DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 sm:space-y-6">
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-sm text-gray-300">
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-sm text-gray-300">
                                 <div className="space-y-2">
                                   <p><strong className="text-white">Customer:</strong> {order.customerInfo.firstName} {order.customerInfo.lastName}</p>
                                   <p><strong className="text-white">Email:</strong> {order.customerInfo.email}</p>
@@ -469,16 +471,16 @@ const AdminPanel: React.FC = () => {
                                 </div>
                               )}
                               
-                              <div className="space-y-3">
+                              <div className="space-y-3 sm:space-y-4">
                                 <Textarea
                                   placeholder="Add verification notes (required for rejection, optional for approval)..."
                                   value={verificationNotes}
                                   onChange={(e) => setVerificationNotes(e.target.value)}
                                   rows={3}
-                                  className="resize-none border-gray-600 text-white placeholder-gray-400"
+                                  className="resize-none border-gray-600 text-white placeholder-gray-400 text-sm sm:text-base"
                                   style={{backgroundColor: '#2A2A2A'}}
                                 />
-                                <div className="flex flex-col sm:flex-row justify-end gap-3">
+                                <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
                                   <Button
                                     variant="outline"
                                     onClick={() => {
@@ -486,7 +488,7 @@ const AdminPanel: React.FC = () => {
                                       setVerificationNotes('');
                                       setDialogOpen(false);
                                     }}
-                                    className="w-full sm:w-auto"
+                                    className="w-full sm:w-auto text-sm sm:text-base"
                                   >
                                     Cancel
                                   </Button>
@@ -494,18 +496,18 @@ const AdminPanel: React.FC = () => {
                                     variant="destructive"
                                     onClick={() => handleVerification('reject')}
                                     disabled={verifyOrderMutation.isPending}
-                                    className="w-full sm:w-auto"
+                                    className="w-full sm:w-auto text-sm sm:text-base"
                                   >
                                     <XCircle className="h-4 w-4 mr-2" />
-                                    <span className="text-sm sm:text-base">Reject Order</span>
+                                    <span>Reject Order</span>
                                   </Button>
                                   <Button
                                     onClick={() => handleVerification('approve')}
                                     disabled={verifyOrderMutation.isPending}
-                                    className="bg-green-600 hover:bg-green-700 w-full sm:w-auto"
+                                    className="bg-green-600 hover:bg-green-700 w-full sm:w-auto text-sm sm:text-base"
                                   >
                                     <CheckCircle className="h-4 w-4 mr-2" />
-                                    <span className="text-sm sm:text-base">Approve & Send Tickets</span>
+                                    <span>Approve & Send Tickets</span>
                                   </Button>
                                 </div>
                               </div>
@@ -524,16 +526,16 @@ const AdminPanel: React.FC = () => {
       
       {/* Image Modal */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-4xl w-full mx-4 border-gray-700" style={{backgroundColor: '#1A1A1A'}}>
+        <DialogContent className="max-w-xs sm:max-w-2xl lg:max-w-4xl xl:max-w-6xl w-full mx-2 sm:mx-4 border-gray-700" style={{backgroundColor: '#1A1A1A'}}>
           <DialogHeader>
-            <DialogTitle className="text-lg sm:text-xl text-white">Payment Screenshot</DialogTitle>
+            <DialogTitle className="text-base sm:text-lg lg:text-xl text-white">Payment Screenshot</DialogTitle>
           </DialogHeader>
           {selectedImage && (
-            <div className="flex justify-center">
+            <div className="flex justify-center p-2 sm:p-4">
               <img 
                 src={selectedImage} 
                 alt="Payment Screenshot" 
-                className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                className="max-w-full max-h-[60vh] sm:max-h-[70vh] lg:max-h-[80vh] object-contain rounded-lg"
               />
             </div>
           )}
