@@ -136,8 +136,7 @@ const CreateEvent = () => {
   const [isUploadingGallery, setIsUploadingGallery] = useState(false);
   const [currentTicket, setCurrentTicket] = useState({
     name: "Default Ticket",
-    grossPrice: "8.19",
-    displayPrice: "10.00",
+    price: "10.00",
     quantity: "Unlimited",
     description: "",
     limitSalesPeriod: false,
@@ -265,8 +264,7 @@ const CreateEvent = () => {
     setIsCreatingNewTicket(false);
     setCurrentTicket({
       name: ticket.name,
-      grossPrice: (ticket.price * 0.9).toFixed(2), // Assuming 10% fee
-      displayPrice: ticket.price.toFixed(2),
+      price: ticket.price.toFixed(2),
       quantity: ticket.quantity.toString(),
       description: ticket.description,
       limitSalesPeriod: false,
@@ -280,8 +278,7 @@ const CreateEvent = () => {
     setIsCreatingNewTicket(true);
     setCurrentTicket({
       name: "New Ticket Type",
-      grossPrice: "9.00",
-      displayPrice: "10.00",
+      price: "10.00",
       quantity: "100",
       description: "",
       limitSalesPeriod: false,
@@ -294,7 +291,7 @@ const CreateEvent = () => {
   const handleSaveTicket = () => {
     const updatedTicket = {
       name: currentTicket.name,
-      price: parseFloat(currentTicket.displayPrice),
+      price: parseFloat(currentTicket.price),
       quantity: parseInt(currentTicket.quantity) || 100,
       description: currentTicket.description,
       isVisible: true,
@@ -314,7 +311,7 @@ const CreateEvent = () => {
         // Update existing ticket type
         return {
           ...prev,
-          ticketPrice: currentTicketIndex === 0 ? currentTicket.displayPrice : prev.ticketPrice,
+          ticketPrice: currentTicketIndex === 0 ? currentTicket.price : prev.ticketPrice,
           ticketTypes: prev.ticketTypes.map((ticket, index) => 
             index === currentTicketIndex ? updatedTicket : ticket
           )
@@ -1628,30 +1625,39 @@ const CreateEvent = () => {
             </div>
 
             {/* Pricing */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Gross Price</Label>
+                <Label className="text-sm font-medium">Ticket Price</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
                   <Input
-                    value={currentTicket.grossPrice}
-                    onChange={(e) => handleTicketChange("grossPrice", e.target.value)}
+                    value={currentTicket.price}
+                    onChange={(e) => handleTicketChange("price", e.target.value)}
                     className="pl-8"
-                    placeholder="8.19"
+                    placeholder="10.00"
+                    type="number"
+                    step="0.01"
+                    min="0"
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Display Price</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
-                  <Input
-                    value={currentTicket.displayPrice}
-                    onChange={(e) => handleTicketChange("displayPrice", e.target.value)}
-                    className="pl-8"
-                    placeholder="10.00"
-                  />
+              
+              {/* Fee Information */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm font-medium text-blue-800">Platform Fee Information</span>
                 </div>
+                <p className="text-sm text-blue-700">
+                  A 10% platform fee will be deducted from each ticket sale.
+                </p>
+                {currentTicket.price && !isNaN(parseFloat(currentTicket.price)) && (
+                  <div className="text-sm text-blue-800">
+                    <strong>You will receive: ${(parseFloat(currentTicket.price) * 0.9).toFixed(2)} per ticket</strong>
+                  </div>
+                )}
               </div>
             </div>
 
