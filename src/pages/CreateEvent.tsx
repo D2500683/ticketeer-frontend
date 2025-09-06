@@ -63,7 +63,6 @@ const CreateEvent = () => {
     location: "",
     venueName: "",
     ticketPrice: "10.00",
-    isRecurring: false,
     ticketTypes: [
       {
         name: "General Admission",
@@ -90,7 +89,8 @@ const CreateEvent = () => {
     },
     // Payment Settings
     mcbJuiceNumber: "",
-    organizerWhatsApp: ""
+    organizerWhatsApp: "",
+    accountNumber: ""
   });
 
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
@@ -202,7 +202,6 @@ const CreateEvent = () => {
         images: galleryImages.map(img => ({ url: img.url, alt: img.originalName })), // Gallery images
         features: eventFeatures, // Event features
         selectedAccentColor: selectedAccentColor, // Accent color for theming
-        isRecurring: eventData.isRecurring,
         isPublic: eventData.showOnExplore,
         requiresApproval: eventData.passwordProtected,
         showTicketAvailability: eventData.showTicketAvailability,
@@ -211,7 +210,8 @@ const CreateEvent = () => {
         livePlaylistSettings: eventData.livePlaylistSettings,
         // Payment Settings
         mcbJuiceNumber: eventData.mcbJuiceNumber,
-        organizerWhatsApp: eventData.organizerWhatsApp
+        organizerWhatsApp: eventData.organizerWhatsApp,
+        accountNumber: eventData.accountNumber
       };
 
       const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.CREATE, {
@@ -662,15 +662,6 @@ const CreateEvent = () => {
               <Button variant="outline" size="sm" className="shadow-subtle">
                 Sell Tickets
               </Button>
-              <Button variant="ghost" size="sm">
-                RSVP
-              </Button>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="shadow-subtle">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload your flyer
-              </Button>
             </div>
           </div>
         </div>
@@ -742,16 +733,6 @@ const CreateEvent = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between pt-2">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="text-sm font-medium">Recurring Series</span>
-                  </div>
-                  <Switch
-                    checked={eventData.isRecurring}
-                    onCheckedChange={(checked) => handleInputChange("isRecurring", checked)}
-                  />
-                </div>
               </CardContent>
             </Card>
 
@@ -880,6 +861,23 @@ const CreateEvent = () => {
                   />
                   <p className="text-xs text-muted-foreground">
                     Customers will transfer money to this MCB Juice number for ticket payments
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="accountNumber" className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Bank Account Number
+                  </Label>
+                  <Input
+                    id="accountNumber"
+                    placeholder="e.g., 1234567890123456"
+                    value={eventData.accountNumber}
+                    onChange={(e) => handleInputChange("accountNumber", e.target.value)}
+                    className="shadow-subtle"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Bank account number for receiving ticket payments
                   </p>
                 </div>
                 
@@ -1321,16 +1319,6 @@ const CreateEvent = () => {
                 
                 <Separator />
                 
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="font-medium">Password Protected Event</Label>
-                    <p className="text-sm text-muted-foreground">Restrict access with a password</p>
-                  </div>
-                  <Switch
-                    checked={eventData.passwordProtected}
-                    onCheckedChange={(checked) => handleInputChange("passwordProtected", checked)}
-                  />
-                </div>
                 
                 <Separator />
                 
@@ -1629,7 +1617,7 @@ const CreateEvent = () => {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Ticket Price</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">RS</span>
                   <Input
                     value={currentTicket.price}
                     onChange={(e) => handleTicketChange("price", e.target.value)}
@@ -1655,7 +1643,7 @@ const CreateEvent = () => {
                 </p>
                 {currentTicket.price && !isNaN(parseFloat(currentTicket.price)) && (
                   <div className="text-sm text-blue-800">
-                    <strong>You will receive: ${(parseFloat(currentTicket.price) * 0.9).toFixed(2)} per ticket</strong>
+                    <strong>You will receive: RS{(parseFloat(currentTicket.price) * 0.9).toFixed(2)} per ticket</strong>
                   </div>
                 )}
               </div>
@@ -1671,42 +1659,7 @@ const CreateEvent = () => {
                 className="min-h-[80px] resize-none"
               />
             </div>
-
-            {/* Ticket Settings */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">Ticket Settings</Label>
-                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
-                  More settings
-                </Button>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm">Limit Sales Period</Label>
-                  <Switch
-                    checked={currentTicket.limitSalesPeriod}
-                    onCheckedChange={(checked) => handleTicketChange("limitSalesPeriod", checked)}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm">Limit Ticket Validity</Label>
-                  <Switch
-                    checked={currentTicket.limitTicketValidity}
-                    onCheckedChange={(checked) => handleTicketChange("limitTicketValidity", checked)}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm">Limit Purchase Quantity</Label>
-                  <Switch
-                    checked={currentTicket.limitPurchaseQuantity}
-                    onCheckedChange={(checked) => handleTicketChange("limitPurchaseQuantity", checked)}
-                  />
-                </div>
-              </div>
-            </div>
+        
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={handleCancelTicket}>
