@@ -16,9 +16,17 @@ import MCBJuiceManualPayment from "@/components/MCBJuiceManualPayment";
 
 // API function to fetch single event
 const fetchEvent = async (id: string) => {
+  console.log('Fetching event with URL:', `${import.meta.env.VITE_API_URL}/api/events/${id}`);
+  console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+  
   const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${id}`);
+  console.log('Response status:', response.status);
+  console.log('Response headers:', response.headers);
+  
   if (!response.ok) {
-    throw new Error('Failed to fetch event');
+    const text = await response.text();
+    console.log('Error response text:', text);
+    throw new Error(`Failed to fetch event: ${response.status} - ${text}`);
   }
   return response.json();
 };
@@ -96,8 +104,11 @@ const Checkout = () => {
 
   // Fetch account number from event data
   useEffect(() => {
+    console.log('Event data in checkout:', event);
+    console.log('Account number from event:', event?.accountNumber);
     if (event?.accountNumber) {
       setAccountNumber(event.accountNumber);
+      console.log('Setting account number to:', event.accountNumber);
     }
   }, [event]);
 
@@ -310,6 +321,11 @@ const Checkout = () => {
                 </div>
                 
                 {/* Bank Transfer Option */}
+                {accountNumber && (
+                  <div style={{border: '2px solid red', padding: '10px', margin: '10px'}}>
+                    DEBUG: Account number found: {accountNumber}
+                  </div>
+                )}
                 {accountNumber && (
                   <div className="space-y-3 sm:space-y-4 w-full">
                     <div className="relative w-full">

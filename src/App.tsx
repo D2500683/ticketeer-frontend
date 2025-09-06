@@ -21,6 +21,8 @@ import Analytics from "./pages/Analytics";
 import Attendees from "./pages/Attendeess";
 import LivePlaylistDashboard from "./pages/LivePlaylistDashboard";
 import AdminPanel from "./components/AdminPanel";
+import Events from "./pages/dashboard/Events";
+import EditEvent from "./pages/dashboard/EditEvent";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -47,6 +49,8 @@ const App = () => (
               <Route index element={<Dashboard />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="attendees" element={<Attendees />} />
+              <Route path="events" element={<Events />} />
+              <Route path="events/:id/edit" element={<EditEvent />} />
               <Route path="admin" element={<AdminPanel />} />
               <Route path="adminpanel" element={<AdminPanel />} />
             </Route>
