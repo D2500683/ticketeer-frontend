@@ -51,9 +51,10 @@ const MCBJuiceManualPayment = ({
   const serviceFee = 0;
   const totalWithFees = checkoutData.totalPrice;
 
-  // MCB Juice and WhatsApp numbers from event data
+  // MCB Juice, WhatsApp, and Bank Account from event data
   const [mcbJuiceNumber, setMcbJuiceNumber] = useState<string>("");
   const [organizerWhatsApp, setOrganizerWhatsApp] = useState<string>("");
+  const [accountNumber, setAccountNumber] = useState<string>("");
   const [isLoadingEventData, setIsLoadingEventData] = useState(false);
 
   // Fetch event data to get MCB Juice number
@@ -78,21 +79,25 @@ const MCBJuiceManualPayment = ({
           
           const mcbNumber = eventData.mcbJuiceNumber || import.meta.env.VITE_MCB_JUICE_NUMBER || "+230 5XXX XXXX";
           const whatsappNumber = eventData.organizerWhatsApp || "+230 5XXX XXXX";
+          const bankAccount = eventData.accountNumber || "";
           
           console.log('Setting MCB Juice number to:', mcbNumber);
           setMcbJuiceNumber(mcbNumber);
           setOrganizerWhatsApp(whatsappNumber);
+          setAccountNumber(bankAccount);
         } else {
           console.error('Failed to fetch event data, using fallback');
           // Fallback to environment variable
           setMcbJuiceNumber(import.meta.env.VITE_MCB_JUICE_NUMBER || "+230 5XXX XXXX");
           setOrganizerWhatsApp("+230 5XXX XXXX");
+          setAccountNumber("");
         }
       } catch (error) {
         console.error('Error fetching event data:', error);
         // Fallback to environment variable
         setMcbJuiceNumber(import.meta.env.VITE_MCB_JUICE_NUMBER || "+230 5XXX XXXX");
         setOrganizerWhatsApp("+230 5XXX XXXX");
+        setAccountNumber("");
       } finally {
         setIsLoadingEventData(false);
       }
@@ -275,6 +280,24 @@ const MCBJuiceManualPayment = ({
                           </div>
                         </div>
                         
+                        {/* Bank Account Number */}
+                        {accountNumber && (
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-blue-50 rounded-lg border-2 border-blue-200 gap-2">
+                            <span className="text-sm sm:text-base text-blue-700 font-medium">Or transfer to Bank Account:</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-xl sm:text-2xl text-blue-800 break-all">{accountNumber}</span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => copyToClipboard(accountNumber, 'Bank account number')}
+                                className="p-1 h-auto text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                        
                         {/* Amount */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-white rounded-lg border-2 border-gray-200 gap-2">
                           <span className="text-sm sm:text-base text-gray-700 font-medium">Amount to transfer:</span>
@@ -282,7 +305,10 @@ const MCBJuiceManualPayment = ({
                         </div>
                         
                         <div className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                          Open your MCB Juice app and transfer the exact amount to the number above
+                          {accountNumber ? 
+                            "Transfer the exact amount using MCB Juice mobile payment or direct bank transfer to the account above" :
+                            "Open your MCB Juice app and transfer the exact amount to the number above"
+                          }
                         </div>
                       </div>
                     </div>

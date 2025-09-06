@@ -681,10 +681,6 @@ const CreateEvent = () => {
                 style={{ fontFamily: fontOptions.find(f => f.name === selectedFont)?.family || 'Inter, sans-serif' }}
               />
               
-              <Button variant="outline" size="sm" className="shadow-subtle hover:shadow-glow transition-all duration-300">
-                <Plus className="w-4 h-4 mr-2" />
-                Short Summary
-              </Button>
             </div>
 
             {/* Dates Section */}
@@ -850,7 +846,7 @@ const CreateEvent = () => {
                 <div className="space-y-2">
                   <Label htmlFor="mcbJuiceNumber" className="flex items-center gap-2">
                     <Smartphone className="w-4 h-4" />
-                    MCB Juice Number (Optional)
+                    MCB Juice Number
                   </Label>
                   <Input
                     id="mcbJuiceNumber"
