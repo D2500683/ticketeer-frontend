@@ -212,7 +212,7 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="min-h-screen" style={{backgroundColor: '#0C0C0C'}}>
       {/* Header */}
-      <header className="border-b border-gray-700 px-4 sm:px-6 py-4 sticky top-0 z-50 shadow-sm" style={{backgroundColor: '#1A1A1A'}}>
+      <header className="border-b border-gray-700 px-4 sm:px-6 py-4 sticky top-0 z-40 shadow-sm" style={{backgroundColor: '#1A1A1A'}}>
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center space-x-3 sm:space-x-4">
             <div className="border-l border-gray-600 pl-3 sm:pl-4">
