@@ -162,8 +162,7 @@ const BankTransferManualPayment = ({
         customerInfo: customerInfo,
         paymentReference: referenceCode,
         totalAmount: totalWithFees,
-        organizerWhatsApp: organizerWhatsApp,
-        paymentMethod: 'bank_transfer'
+        organizerWhatsApp: organizerWhatsApp
       };
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/bank-transfer-whatsapp`, {
