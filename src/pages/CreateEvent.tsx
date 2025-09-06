@@ -184,19 +184,15 @@ const CreateEvent = () => {
         : new Date(startDateTime.getTime() + 2 * 60 * 60 * 1000); // Default 2 hours later
 
       const eventPayload = {
-        name: eventData.name.trim(),
-        description: eventData.description.trim(),
-        startDate: startDateTime.toISOString(),
-        endDate: endDateTime.toISOString(),
-        location: eventData.location.trim(),
-        venueName: eventData.venueName.trim(),
-        ticketTypes: eventData.ticketTypes.map(ticket => ({
-          name: ticket.name,
-          price: ticket.price,
-          quantity: ticket.quantity,
-          description: ticket.description
-        })),
-        flyerUrl: flyerUrl, // Cloud image URL
+        name: eventData.name,
+        shortSummary: eventData.shortSummary,
+        description: eventData.description,
+        startDate: eventData.startDate,
+        endDate: eventData.endDate,
+        location: eventData.location,
+        venueName: eventData.venueName,
+        ticketTypes: eventData.ticketTypes,
+        flyerUrl: flyerUrl,
         songs: selectedSongs, // Spotify tracks
         youtubeVideo: selectedVideo, // YouTube video
         images: galleryImages.map(img => ({ url: img.url, alt: img.originalName })), // Gallery images
@@ -213,6 +209,9 @@ const CreateEvent = () => {
         organizerWhatsApp: eventData.organizerWhatsApp,
         accountNumber: eventData.accountNumber
       };
+
+      console.log('Creating event with payload:', eventPayload);
+      console.log('Account number being sent:', eventData.accountNumber);
 
       const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.CREATE, {
         method: 'POST',
