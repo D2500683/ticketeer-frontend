@@ -845,7 +845,7 @@ const EventDetails = () => {
                   </Button>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {event.attendees.map((attendee: any, index: number) => {
                     const displayName = attendee.customerInfo?.firstName ? 
                                        `${attendee.customerInfo.firstName} ${attendee.customerInfo.lastName?.charAt(0) || ''}.` : 
@@ -853,23 +853,25 @@ const EventDetails = () => {
                     const avatarSeed = attendee.customerInfo?.email || `attendee-${index}`;
                     
                     return (
-                      <div key={attendee.id || index} className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg">
-                        <Avatar className="w-10 h-10">
+                      <div key={attendee.id || index} className="flex flex-col items-center text-center p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+                        <Avatar className="w-12 h-12 mb-2">
                           <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`} />
                           <AvatarFallback className="text-sm">
                             {displayName.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-white">
+                        <div className="w-full">
+                          <p className="text-sm font-medium text-white truncate mb-1">
                             {displayName}
                           </p>
-                          <p className="text-xs text-gray-400">
-                            {attendee.ticketType} {attendee.quantity > 1 ? `(${attendee.quantity})` : ''}
+                          <p className="text-xs text-gray-400 truncate">
+                            {attendee.ticketType}
                           </p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(attendee.purchaseDate).toLocaleDateString()}
-                          </p>
+                          {attendee.quantity > 1 && (
+                            <p className="text-xs text-gray-500">
+                              {attendee.quantity} tickets
+                            </p>
+                          )}
                         </div>
                       </div>
                     );
