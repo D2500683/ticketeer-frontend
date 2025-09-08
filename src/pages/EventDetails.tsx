@@ -502,7 +502,7 @@ const EventDetails = () => {
 
               {/* Attendees Section */}
               {event.attendees && event.attendees.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-4 pb-24">
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5" />
                     <h3 className="text-xl font-semibold">
@@ -536,16 +536,14 @@ const EventDetails = () => {
                       );
                     })}
                     
-                    {event.attendees.length > 6 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowGuestlistModal(true)}
-                        className="ml-2 text-xs"
-                      >
-                        View Guestlist
-                      </Button>
-                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowGuestlistModal(true)}
+                      className="ml-2 text-xs"
+                    >
+                      View Guestlist
+                    </Button>
                   </div>
                 </div>
               )}
