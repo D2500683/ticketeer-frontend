@@ -88,9 +88,6 @@ const Header = () => {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-white hover:text-gray-300">
-                <Search className="w-4 h-4" />
-              </Button>
               {isAuthenticated ? (
                 <div className="relative">
                   <Button 
