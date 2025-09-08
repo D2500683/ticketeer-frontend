@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { API_CONFIG } from "@/config/api";
 import { 
   Edit, 
   Eye, 
@@ -21,10 +22,10 @@ import { useAuth } from "@/contexts/AuthContext";
 // API function to fetch organizer's events
 const fetchOrganizerEvents = async () => {
   console.log('Fetching organizer events...');
-  console.log('API URL:', import.meta.env.VITE_API_URL);
+  console.log('API URL:', API_CONFIG.BASE_URL);
   console.log('Token:', localStorage.getItem('token') ? 'Present' : 'Missing');
   
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/user/my-events`, {
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ORGANIZER, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }

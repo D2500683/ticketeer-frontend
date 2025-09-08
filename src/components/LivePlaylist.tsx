@@ -91,6 +91,7 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState(0);
+  const [activeTab, setActiveTab] = useState<'request' | 'queue' | 'controls'>('request');
 
   // Initialize socket connection
   useEffect(() => {
@@ -408,12 +409,30 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
 
       <div className="w-full">
         <div className="flex space-x-1 mb-4">
-          <button className="px-4 py-2 rounded-md bg-primary text-primary-foreground">Request Songs</button>
-          <button className="px-4 py-2 rounded-md bg-muted text-muted-foreground">Queue ({playlist.queue.length})</button>
-          {isDJ && <button className="px-4 py-2 rounded-md bg-muted text-muted-foreground">DJ Controls</button>}
+          <button 
+            onClick={() => setActiveTab('request')}
+            className={`px-4 py-2 rounded-md ${activeTab === 'request' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+          >
+            Request Songs
+          </button>
+          <button 
+            onClick={() => setActiveTab('queue')}
+            className={`px-4 py-2 rounded-md ${activeTab === 'queue' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+          >
+            Queue ({playlist.queue.length})
+          </button>
+          {isDJ && (
+            <button 
+              onClick={() => setActiveTab('controls')}
+              className={`px-4 py-2 rounded-md ${activeTab === 'controls' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+            >
+              DJ Controls
+            </button>
+          )}
         </div>
 
         {/* Song Request Tab */}
+        {activeTab === 'request' && (
         <div className="space-y-4">
           <Card>
             <CardHeader>
@@ -475,9 +494,11 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
             </CardContent>
           </Card>
         </div>
+        )}
 
         {/* Queue Tab */}
-        <div className="space-y-4" style={{display: 'none'}}>
+        {activeTab === 'queue' && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -584,10 +605,11 @@ const LivePlaylist: React.FC<LivePlaylistProps> = ({ eventId, isDJ }) => {
             </CardContent>
           </Card>
         </div>
+        )}
 
         {/* DJ Controls Tab */}
-        {isDJ && (
-          <div className="space-y-4" style={{display: 'none'}}>
+        {isDJ && activeTab === 'controls' && (
+          <div className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

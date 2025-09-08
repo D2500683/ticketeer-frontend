@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { CalendarDays, MapPin, Users, Clock, CheckCircle, Download, ArrowLeft, Mail, Smartphone, QrCode, ArrowRight, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 import { API_CONFIG } from '@/config/api'
+import ConfirmationShare from '@/components/ConfirmationShare'
 
 // API function to fetch order details
 const fetchOrder = async (orderId: string) => {
@@ -45,8 +46,12 @@ const OrderConfirmation = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div>Loading...</div>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white text-lg">Processing your order...</p>
+          <p className="text-gray-400 text-sm mt-2">Please wait while we confirm your ticket purchase</p>
+        </div>
       </div>
     );
   }
@@ -122,48 +127,29 @@ const OrderConfirmation = () => {
           </Badge>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {/* Left Column - Order Details */}
+        {/* Enhanced Confirmation with Social Sharing */}
+        {event && order && (
+          <ConfirmationShare
+            order={{
+              orderNumber: order._id.slice(-8).toUpperCase(),
+              totalAmount: order.totalAmount,
+              tickets: order.tickets
+            }}
+            event={{
+              _id: event._id,
+              name: event.name,
+              description: event.description || event.shortSummary || '',
+              startDate: event.startDate,
+              location: event.venueName || event.location,
+              image: event.flyerUrl
+            }}
+            customerInfo={order.customerInfo}
+          />
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8">
+          {/* Left Column - Additional Details */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1">
-            {/* Event Information */}
-            {event && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5" />
-                    Event Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 sm:space-y-4">
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    {event.flyerUrl && (
-                      <img
-                        src={event.flyerUrl}
-                        alt={event.name}
-                        className="w-full sm:w-20 sm:h-20 h-32 object-cover rounded-lg sm:flex-shrink-0"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{event.name}</h3>
-                      <div className="space-y-2 text-sm sm:text-base text-gray-600">
-                        <div className="flex items-start sm:items-center gap-2">
-                          <Calendar className="w-4 h-4 mt-0.5 sm:mt-0 flex-shrink-0" />
-                          <span className="break-words">{eventDateTime?.date} at {eventDateTime?.time}</span>
-                        </div>
-                        <div className="flex items-start sm:items-center gap-2">
-                          <MapPin className="w-4 h-4 mt-0.5 sm:mt-0 flex-shrink-0" />
-                          <span className="break-words">{event.venueName || event.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Ticket Information */}
-            
-
             {/* Customer Information */}
             <Card>
               <CardHeader>
@@ -188,50 +174,6 @@ const OrderConfirmation = () => {
                     <p className="font-medium text-sm sm:text-base">{order.customerInfo.phone}</p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Next Steps */}
-            <Card className="border-blue-200 bg-blue-50">
-              <CardHeader>
-                <CardTitle className="text-blue-900">What's Next?</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 sm:space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs sm:text-sm font-bold">
-                      1
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-blue-900 text-sm sm:text-base">Check Your Email</h4>
-                      <p className="text-xs sm:text-sm text-blue-700 break-words">
-                        We've sent your tickets and order confirmation to {order.customerInfo.email}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs sm:text-sm font-bold">
-                      2
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-blue-900 text-sm sm:text-base">Save Your Tickets</h4>
-                      <p className="text-xs sm:text-sm text-blue-700">
-                        Download or add your tickets to your mobile wallet for easy access
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs sm:text-sm font-bold">
-                      3
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-blue-900 text-sm sm:text-base">Arrive Early</h4>
-                      <p className="text-xs sm:text-sm text-blue-700">
-                        Plan to arrive 15-30 minutes before the event starts for smooth entry
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -302,7 +244,7 @@ const OrderConfirmation = () => {
                 <p className="text-xs sm:text-sm text-orange-700 mb-3 sm:mb-4">
                   Find other amazing events happening in your area
                 </p>
-                <Link to="/events">
+                <Link to="/">
                   <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto h-9 sm:h-10 text-sm">
                     Browse Events
                     <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2" />

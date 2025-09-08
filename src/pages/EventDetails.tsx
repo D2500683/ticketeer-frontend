@@ -37,6 +37,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import LivePlaylist from "@/components/LivePlaylist";
 import { format } from "date-fns";
 import { API_CONFIG } from "@/config/api";
+import SocialShareButton from "@/components/SocialShareButton";
+import { useSocialShare } from "@/hooks/useSocialShare";
+import CountdownTimer from "@/components/CountdownTimer";
 
 // API function to fetch single event
 const fetchEvent = async (id: string) => {
@@ -110,37 +113,11 @@ const EventDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showLivePlaylist, setShowLivePlaylist] = useState(false);
   const [showGuestlistModal, setShowGuestlistModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
-  // Share functionality
-  const handleShare = async () => {
-    const shareData = {
-      title: event.name,
-      text: `Check out this event: ${event.name}`,
-      url: window.location.href,
-    };
-
-    try {
-      if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback: copy to clipboard
-        await navigator.clipboard.writeText(window.location.href);
-        // You could add a toast notification here
-        alert('Event link copied to clipboard!');
-      }
-    } catch (error) {
-      console.error('Error sharing:', error);
-      // Fallback: copy to clipboard
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        alert('Event link copied to clipboard!');
-      } catch (clipboardError) {
-        console.error('Clipboard error:', clipboardError);
-        alert('Unable to share. Please copy the URL manually.');
-      }
-    }
-  };
+  // Social sharing hook
+  const { generateEventShareData } = useSocialShare();
   
   const { data: event, isLoading, error } = useQuery({
     queryKey: ['event', id],
@@ -473,6 +450,18 @@ const EventDetails = () => {
               >
                 {event.shortSummary || event.description}
               </motion.p>
+            </motion.div>
+
+            {/* Countdown Timer */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
+              <CountdownTimer 
+                targetDate={event.startDate} 
+                className="w-full"
+              />
             </motion.div>
 
             {/* About Section */}
@@ -813,7 +802,7 @@ const EventDetails = () => {
               {/* Share Button */}
               <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4">
                 <Button
-                  onClick={handleShare}
+                  onClick={() => setShowShareModal(true)}
                   variant="secondary"
                   size="sm"
                   className="bg-black/50 backdrop-blur-sm hover:bg-black/70 text-white border-white/20"
@@ -885,6 +874,113 @@ const EventDetails = () => {
                       </div>
                     );
                   })}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Share Modal */}
+        <AnimatePresence>
+          {showShareModal && event && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setShowShareModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-gray-900 rounded-lg p-6 max-w-md w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Share2 className="h-5 w-5" />
+                    Share Event
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowShareModal(false)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </Button>
+                </div>
+                
+                {/* Event Preview */}
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <div className="flex gap-3">
+                    <img 
+                      src={getEventImage(event)} 
+                      alt={event.name}
+                      className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-white truncate">{event.name}</h3>
+                      <p className="text-sm text-gray-400 truncate">{event.location}</p>
+                      <p className="text-sm text-gray-400">
+                        {new Date(event.startDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Share Buttons */}
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-400 mb-4">Share this event with your friends:</p>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <SocialShareButton
+                      platform="facebook"
+                      data={generateEventShareData(event)}
+                      hashtags={['Event', 'Tickets', event.name.replace(/\s+/g, '')]}
+                      className="w-full"
+                      size="sm"
+                    />
+                    
+                    <SocialShareButton
+                      platform="instagram"
+                      data={generateEventShareData(event)}
+                      hashtags={['Event', 'Tickets', event.name.replace(/\s+/g, '')]}
+                      className="w-full"
+                      size="sm"
+                    />
+                    
+                    <SocialShareButton
+                      platform="whatsapp"
+                      data={generateEventShareData(event)}
+                      hashtags={['Event', 'Tickets', event.name.replace(/\s+/g, '')]}
+                      className="w-full"
+                      size="sm"
+                    />
+                    
+                    <SocialShareButton
+                      platform="copy"
+                      data={generateEventShareData(event)}
+                      variant="outline"
+                      className="w-full"
+                      size="sm"
+                    />
+                  </div>
+
+                  {/* Native Share Button */}
+                  <div className="pt-3 border-t border-gray-700">
+                    <SocialShareButton
+                      platform="native"
+                      data={generateEventShareData(event)}
+                      variant="outline"
+                      className="w-full"
+                      size="sm"
+                    >
+                      <Share2 className="h-4 w-4 mr-2" />
+                      More Options
+                    </SocialShareButton>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>

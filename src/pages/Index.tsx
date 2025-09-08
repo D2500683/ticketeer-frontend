@@ -16,7 +16,7 @@ const Index = () => {
         <CategoryTabs />
         <FeaturedSection />
         <EventDiscoveryGrid />
-        <CommunityStories />
+        {/* <CommunityStories /> */}
         <CTABanner />
       </main>
       <Footer />

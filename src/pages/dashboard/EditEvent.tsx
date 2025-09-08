@@ -23,10 +23,11 @@ import {
   Smartphone
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { API_CONFIG } from "@/config/api";
 
 // API functions
 const fetchEvent = async (id: string) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${id}`);
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ID(id));
   if (!response.ok) {
     throw new Error('Failed to fetch event');
   }
@@ -34,7 +35,7 @@ const fetchEvent = async (id: string) => {
 };
 
 const updateEvent = async (id: string, eventData: any) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${id}`, {
+  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.UPDATE(id), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

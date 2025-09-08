@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Copy, MessageCircle, Phone, CheckCircle, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { API_CONFIG } from '@/config/api';
 import { Loading } from "@/components/ui/loading";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Smartphone, Copy, CheckCircle, AlertCircle, MessageCircle, ExternalLink } from "lucide-react";
+import { Smartphone, AlertCircle, ExternalLink } from "lucide-react";
 
 interface MCBJuiceManualPaymentProps {
   checkoutData: {
@@ -70,7 +73,7 @@ const MCBJuiceManualPayment = ({
       try {
         const eventId = String(checkoutData.eventId);
         console.log('Making API call with eventId:', eventId);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`);
+        const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.GET_BY_ID(eventId));
         if (response.ok) {
           const eventData = await response.json();
           console.log('Event data received:', eventData);
@@ -165,7 +168,7 @@ const MCBJuiceManualPayment = ({
         organizerWhatsApp: organizerWhatsApp
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/mcb-juice-whatsapp`, {
+      const response = await fetch(API_CONFIG.ENDPOINTS.ORDERS.MCB_JUICE_WHATSAPP, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

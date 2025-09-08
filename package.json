@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:local": "VITE_API_URL=http://localhost:5001 VITE_SOCKET_URL=http://localhost:5001 vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:local": "node start-local.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

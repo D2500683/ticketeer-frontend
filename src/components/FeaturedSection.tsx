@@ -9,11 +9,12 @@ import { ArrowRight, Clock, MapPin } from 'lucide-react'
 
 // API function to fetch events
 const fetchEvents = async () => {
-  const response = await fetch(API_CONFIG.ENDPOINTS.EVENTS.BASE);
+  const response = await fetch(`${API_CONFIG.ENDPOINTS.EVENTS.BASE}?status=draft`);
   if (!response.ok) {
     throw new Error('Failed to fetch events');
   }
-  return response.json();
+  const data = await response.json();
+  return data.events || data;
 };
 
 const FeaturedSection = () => {
@@ -66,13 +67,6 @@ const FeaturedSection = () => {
               music gatherings, these community builders are proving that the best experiences 
               happen when people come together.
             </p>
-            <Button 
-              variant="ghost" 
-              className="text-primary hover:text-primary/80 font-semibold p-0 group"
-            >
-              Read Full Story
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
           </div>
 
           {/* Featured Event Card */}

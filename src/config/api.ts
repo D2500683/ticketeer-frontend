@@ -1,6 +1,26 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ticketeer-backend-2.onrender.com';
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://ticketeer-backend-2.onrender.com';
+// Determine if we're in development mode
+const isDevelopment = import.meta.env.DEV;
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Default URLs based on environment
+const getDefaultApiUrl = () => {
+  if (isDevelopment && isLocalhost) {
+    return 'http://localhost:5001';
+  }
+  return 'https://ticketeer-backend-2.onrender.com';
+};
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || getDefaultApiUrl();
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || getDefaultApiUrl();
+
+// Log current configuration for debugging
+console.log('🔗 API Configuration:', {
+  environment: isDevelopment ? 'development' : 'production',
+  isLocalhost,
+  apiUrl: API_BASE_URL,
+  socketUrl: SOCKET_URL
+});
 
 // Helper function to make API requests with CORS handling
 export const apiRequest = async (url: string, options: RequestInit = {}) => {
@@ -50,6 +70,7 @@ export const API_CONFIG = {
       VERIFY: (id: string) => `${API_BASE_URL}/api/orders/${id}/verify`,
       MCB_JUICE: `${API_BASE_URL}/api/orders/mcb-juice`,
       MCB_JUICE_WHATSAPP: `${API_BASE_URL}/api/orders/mcb-juice-whatsapp`,
+      BANK_TRANSFER_WHATSAPP: `${API_BASE_URL}/api/orders/bank-transfer-whatsapp`,
     },
     ADMIN: {
       ORDERS_PENDING: `${API_BASE_URL}/api/admin/orders/pending`,

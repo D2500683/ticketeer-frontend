@@ -67,43 +67,15 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2 text-muted-foreground">
                 <Phone className="w-4 h-4" />
-                <span>(555) 123-EVENTS</span>
+                <span>(230) 5978-1328</span>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="bg-foreground text-background rounded-lg px-4 py-2 flex items-center space-x-2 cursor-pointer hover:bg-foreground/90 transition-colors">
-                <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center">
-                  <span className="text-xs font-bold text-foreground">📱</span>
-                </div>
-                <div className="text-left">
-                  <div className="text-xs">Download on the</div>
-                  <div className="text-sm font-semibold">App Store</div>
-                </div>
-              </div>
-              
-              <div className="bg-foreground text-background rounded-lg px-4 py-2 flex items-center space-x-2 cursor-pointer hover:bg-foreground/90 transition-colors">
-                <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center">
-                  <span className="text-xs font-bold text-foreground">▶</span>
-                </div>
-                <div className="text-left">
-                  <div className="text-xs">Get it on</div>
-                  <div className="text-sm font-semibold">Google Play</div>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>© 2024 Ticketeer. Made with ❤️ for communities everywhere.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-primary transition-colors">Cookie Policy</a>
-          </div>
-        </div>
+        
       </div>
     </footer>
   )

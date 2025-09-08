@@ -24,7 +24,6 @@ const navigation = [
   { name: 'Attendees', href: '/dashboard/attendees', icon: Users },
   { name: 'Events', href: '/dashboard/events', icon: Calendar },
   { name: 'Admin Panel', href: '/dashboard/adminpanel', icon: Shield },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
 export default function DashboardLayout() {

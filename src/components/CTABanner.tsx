@@ -1,7 +1,21 @@
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const CTABanner = () => {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+
+  const handleStartCreating = () => {
+    if (user) {
+      // User is logged in, redirect to dashboard or create event page
+      navigate('/dashboard')
+    } else {
+      // User is not logged in, redirect to login page
+      navigate('/login')
+    }
+  }
   return (
     <section className="px-6 mt-20">
       <div className="container mx-auto">
@@ -31,7 +45,8 @@ const CTABanner = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-4 rounded-full group shadow-hero"
+                onClick={handleStartCreating}
+                className="bg-white text-black hover:bg-white/90 font-semibold px-8 py-4 rounded-full group shadow-hero"
               >
                 Start Creating
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -40,6 +55,7 @@ const CTABanner = () => {
               <Button 
                 variant="ghost" 
                 size="lg"
+                onClick={() => navigate('/how-it-works')}
                 className="text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-full border border-white/30"
               >
                 Learn How It Works
